@@ -12,6 +12,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.function.Consumer;
 
+import com.nextcloud.android.sso.model.SingleSignOnAccount;
+
 import it.niedermann.android.markdown.MarkdownEditor;
 
 public class PlainTextEditorImpl  extends AppCompatEditText implements MarkdownEditor {
@@ -34,7 +36,12 @@ public class PlainTextEditorImpl  extends AppCompatEditText implements MarkdownE
     }
 
     @Override
+    @Deprecated(forRemoval = true)
     public void setSearchColor(@ColorInt int color) {
+    }
+
+    @Override
+    public void setCurrentSingleSignOnAccount(@Nullable SingleSignOnAccount account, @ColorInt int color) {
     }
 
     @Override
@@ -52,10 +59,6 @@ public class PlainTextEditorImpl  extends AppCompatEditText implements MarkdownE
         throw new UnsupportedOperationException("This is not available in " + PlainTextEditorImpl.class.getSimpleName() + " because the text is getting rendered all the time.");
     }
 
-    /**
-     * Updates the current model which matches the rendered state of the editor *without* triggering
-     * anything of the native {@link EditText}
-     */
     public void setMarkdownStringModel(CharSequence text) {
         unrenderedText$.setValue(text == null ? "" : text.toString());
         if (listener != null) {

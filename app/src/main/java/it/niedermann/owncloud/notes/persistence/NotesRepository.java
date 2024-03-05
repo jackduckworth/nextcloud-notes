@@ -9,20 +9,18 @@ import static it.niedermann.owncloud.notes.edit.EditNoteActivity.ACTION_SHORTCUT
 import static it.niedermann.owncloud.notes.shared.util.NoteUtil.generateNoteExcerpt;
 import static it.niedermann.owncloud.notes.widget.notelist.NoteListWidget.updateNoteListWidgets;
 import static it.niedermann.owncloud.notes.widget.singlenote.SingleNoteWidget.updateSingleNoteWidgets;
-
 import android.accounts.NetworkErrorException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.annotation.AnyThread;
 import androidx.annotation.ColorInt;
 import androidx.annotation.MainThread;
@@ -31,14 +29,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
-
 import com.nextcloud.android.sso.AccountImporter;
 import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException;
 import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException;
 import com.nextcloud.android.sso.helper.SingleAccountHelper;
 import com.nextcloud.android.sso.model.SingleSignOnAccount;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -48,7 +45,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import it.niedermann.android.sharedpreferences.SharedPreferenceIntLiveData;
 import it.niedermann.owncloud.notes.BuildConfig;
 import it.niedermann.owncloud.notes.R;
@@ -71,6 +67,7 @@ import it.niedermann.owncloud.notes.shared.model.NavigationCategory;
 import it.niedermann.owncloud.notes.shared.model.NotesSettings;
 import it.niedermann.owncloud.notes.shared.model.SyncResultStatus;
 import it.niedermann.owncloud.notes.shared.util.ApiVersionUtil;
+import it.niedermann.owncloud.notes.shared.util.ConnectionLiveData;
 import it.niedermann.owncloud.notes.shared.util.NoteUtil;
 import it.niedermann.owncloud.notes.shared.util.SSOUtil;
 import retrofit2.Call;
@@ -83,22 +80,38 @@ public class NotesRepository {
     private static NotesRepository instance;
 
     private final ApiProvider apiProvider;
-    private final ExecutorService executor;
+    private ExecutorService executor;
     private final ExecutorService syncExecutor;
     private final ExecutorService importExecutor;
-    private final Context context;
+    private Context context;
     private final NotesDatabase db;
     private final String defaultNonEmptyTitle;
-
-    /**
-     * Track network connection changes using a {@link BroadcastReceiver}
-     */
+    private final LiveData<ConnectionLiveData.ConnectionType> connectionLiveData;
     private boolean isSyncPossible = false;
     private boolean networkConnected = false;
     private String syncOnlyOnWifiKey;
     private boolean syncOnlyOnWifi;
     private final MutableLiveData<Boolean> syncStatus = new MutableLiveData<>(false);
     private final MutableLiveData<ArrayList<Throwable>> syncErrors = new MutableLiveData<>();
+
+    private final Observer<? super ConnectionLiveData.ConnectionType> syncObserver = (Observer<ConnectionLiveData.ConnectionType>) connectionType -> {
+        observeNetworkStatus(connectionType);
+
+        if (context == null || executor == null) {
+            return;
+        }
+
+        if (isSyncPossible() && SSOUtil.isConfigured(context)) {
+            executor.submit(() -> {
+                try {
+                    scheduleSync(getAccountByName(SingleAccountHelper.getCurrentSingleSignOnAccount(context).name), false);
+                } catch (NextcloudFilesAppAccountNotFoundException |
+                         NoCurrentAccountSelectedException e) {
+                    Log.v(TAG, "Can not select current SingleSignOn account after network changed, do not sync.");
+                }
+            });
+        }
+    };
 
     /**
      * @see <a href="https://stackoverflow.com/a/3104265">Do not make this a local variable.</a>
@@ -108,22 +121,6 @@ public class NotesRepository {
         if (syncOnlyOnWifiKey.equals(key)) {
             syncOnlyOnWifi = prefs.getBoolean(syncOnlyOnWifiKey, false);
             updateNetworkStatus();
-        }
-    };
-
-    private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateNetworkStatus();
-            if (isSyncPossible() && SSOUtil.isConfigured(context)) {
-                executor.submit(() -> {
-                    try {
-                        scheduleSync(getAccountByName(SingleAccountHelper.getCurrentSingleSignOnAccount(context).name), false);
-                    } catch (NextcloudFilesAppAccountNotFoundException | NoCurrentAccountSelectedException e) {
-                        Log.v(TAG, "Can not select current SingleSignOn account after network changed, do not sync.");
-                    }
-                });
-            }
         }
     };
 
@@ -152,9 +149,9 @@ public class NotesRepository {
         this.apiProvider = apiProvider;
         this.defaultNonEmptyTitle = NoteUtil.generateNonEmptyNoteTitle("", this.context);
         this.syncOnlyOnWifiKey = context.getApplicationContext().getResources().getString(R.string.pref_key_wifi_only);
+        this.connectionLiveData = new ConnectionLiveData(context);
 
-        // Registers BroadcastReceiver to track network connection changes.
-        this.context.registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        connectionLiveData.observeForever(syncObserver);
 
         final var prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
         prefs.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
@@ -163,9 +160,62 @@ public class NotesRepository {
         updateNetworkStatus();
     }
 
+    public void updateNetworkStatus() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager == null) {
+            handleFailedNetworkStatus("ConnectivityManager is null");
+            return;
+        }
+
+        Network network = connectivityManager.getActiveNetwork();
+        if (network == null) {
+            handleFailedNetworkStatus("No network connection");
+            return;
+        }
+
+        NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+        if (networkCapabilities == null) {
+            handleFailedNetworkStatus("NetworkCapabilities is null");
+            return;
+        }
+
+        handleNetworkStatus(networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI));
+    }
+
+    private void observeNetworkStatus(ConnectionLiveData.ConnectionType connectionType) {
+        if (connectionType == ConnectionLiveData.ConnectionType.Lost) {
+            handleFailedNetworkStatus("No network connection");
+        } else {
+            Log.d(TAG, "Network connection established with " + connectionType.name());
+            handleNetworkStatus(connectionType == ConnectionLiveData.ConnectionType.WiFi);
+        }
+    }
+
+    private void handleFailedNetworkStatus(String message) {
+        Log.e(TAG, message);
+        networkConnected = false;
+        isSyncPossible = false;
+    }
+
+    private void handleNetworkStatus(boolean isWifiActive) {
+        networkConnected = true;
+        isSyncPossible = !syncOnlyOnWifi || isWifiActive;
+
+        if (isSyncPossible) {
+            Log.d(TAG, "Network connection established.");
+        } else {
+            Log.d(TAG, "Network connected, but not used because only synced on wifi.");
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        connectionLiveData.removeObserver(syncObserver);
+        super.finalize();
+    }
 
     // Accounts
-
     @AnyThread
     public LiveData<ImportStatus> addAccount(@NonNull String url, @NonNull String username, @NonNull String accountName, @NonNull Capabilities capabilities, @Nullable String displayName, @NonNull IResponseCallback<Account> callback) {
         final var account = db.getAccountDao().getAccountById(db.getAccountDao().insert(new Account(url, username, accountName, displayName, capabilities)));
@@ -187,7 +237,7 @@ public class NotesRepository {
                         public void onError(@NonNull Throwable t) {
                             Log.e(TAG, "… Error while importing " + account.getAccountName() + ": " + t.getMessage());
                             deleteAccount(account);
-                            SingleAccountHelper.setCurrentAccount(context, null);
+                            SingleAccountHelper.commitCurrentAccount(context, null);
                             callback.onError(t);
                         }
                     });
@@ -195,7 +245,7 @@ public class NotesRepository {
                     Log.e(TAG, "… Could not find " + SingleSignOnAccount.class.getSimpleName() + " for account name " + account.getAccountName());
                     importExecutor.submit(() -> {
                         deleteAccount(account);
-                        SingleAccountHelper.setCurrentAccount(context, null);
+                        SingleAccountHelper.commitCurrentAccount(context, null);
                         callback.onError(e);
                     });
                 }
@@ -203,7 +253,7 @@ public class NotesRepository {
                 Log.e(TAG, "… No network connection available to import " + account.getAccountName());
                 importExecutor.submit(() -> {
                     deleteAccount(account);
-                    SingleAccountHelper.setCurrentAccount(context, null);
+                    SingleAccountHelper.commitCurrentAccount(context, null);
                     callback.onError(new NetworkErrorException());
                 });
             }
@@ -263,6 +313,7 @@ public class NotesRepository {
     public void updateModified(long id, long modified) {
         db.getAccountDao().updateModified(id, modified);
     }
+
     public void updateDirectEditingAvailable(final long id, final boolean available) {
         db.getAccountDao().updateDirectEditingAvailable(id, available);
     }
@@ -653,20 +704,16 @@ public class NotesRepository {
             int orderIndex = sortingMethod.getId();
 
             switch (selectedCategory.getType()) {
-                case FAVORITES: {
+                case FAVORITES -> {
                     sp.putInt(ctx.getString(R.string.action_sorting_method) + ' ' + ctx.getString(R.string.label_favorites), orderIndex);
-                    break;
                 }
-                case UNCATEGORIZED: {
+                case UNCATEGORIZED -> {
                     sp.putInt(ctx.getString(R.string.action_sorting_method) + ' ' + ctx.getString(R.string.action_uncategorized), orderIndex);
-                    break;
                 }
-                case RECENT: {
+                case RECENT -> {
                     sp.putInt(ctx.getString(R.string.action_sorting_method) + ' ' + ctx.getString(R.string.label_all_notes), orderIndex);
-                    break;
                 }
-                case DEFAULT_CATEGORY:
-                default: {
+                default -> {
                     final String category = selectedCategory.getCategory();
                     if (category != null) {
                         if (db.getCategoryOptionsDao().modifyCategoryOrder(accountId, category, sortingMethod) == 0) {
@@ -680,7 +727,6 @@ public class NotesRepository {
                     } else {
                         throw new IllegalStateException("Tried to modify category order for " + ENavigationCategoryType.DEFAULT_CATEGORY + "but category is null.");
                     }
-                    break;
                 }
             }
             sp.apply();
@@ -707,20 +753,16 @@ public class NotesRepository {
 
         switch (selectedCategory.getType()) {
             // TODO make this account specific
-            case RECENT: {
+            case RECENT -> {
                 prefKey = context.getString(R.string.action_sorting_method) + ' ' + context.getString(R.string.label_all_notes);
-                break;
             }
-            case FAVORITES: {
+            case FAVORITES -> {
                 prefKey = context.getString(R.string.action_sorting_method) + ' ' + context.getString(R.string.label_favorites);
-                break;
             }
-            case UNCATEGORIZED: {
+            case UNCATEGORIZED -> {
                 prefKey = context.getString(R.string.action_sorting_method) + ' ' + context.getString(R.string.action_uncategorized);
-                break;
             }
-            case DEFAULT_CATEGORY:
-            default: {
+            default -> {
                 final String category = selectedCategory.getCategory();
                 if (category != null) {
                     return db.getCategoryOptionsDao().getCategoryOrder(selectedCategory.getAccountId(), category);
@@ -732,12 +774,6 @@ public class NotesRepository {
         }
 
         return map(new SharedPreferenceIntLiveData(sp, prefKey, CategorySortingMethod.SORT_MODIFIED_DESC.getId()), CategorySortingMethod::findById);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        this.context.unregisterReceiver(networkReceiver);
-        super.finalize();
     }
 
     /**
@@ -814,9 +850,7 @@ public class NotesRepository {
         if (account == null) {
             Log.i(TAG, SingleSignOnAccount.class.getSimpleName() + " is null. Is this a local account?");
         } else {
-            if (syncActive.get(account.getId()) == null) {
-                syncActive.put(account.getId(), false);
-            }
+            syncActive.putIfAbsent(account.getId(), false);
             Log.d(TAG, "Sync requested (" + (onlyLocalChanges ? "onlyLocalChanges" : "full") + "; " + (Boolean.TRUE.equals(syncActive.get(account.getId())) ? "sync active" : "sync NOT active") + ") ...");
             if (isSyncPossible() && (!Boolean.TRUE.equals(syncActive.get(account.getId())) || onlyLocalChanges)) {
                 syncActive.put(account.getId(), true);
@@ -895,45 +929,6 @@ public class NotesRepository {
                     }
                 }
             }
-        }
-    }
-
-    public void updateNetworkStatus() {
-        try {
-            final var connMgr = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (connMgr == null) {
-                throw new NetworkErrorException("ConnectivityManager is null");
-            }
-
-            final var activeInfo = connMgr.getActiveNetworkInfo();
-            if (activeInfo == null) {
-                throw new NetworkErrorException("NetworkInfo is null");
-            }
-
-            if (activeInfo.isConnected()) {
-                networkConnected = true;
-
-                final var networkInfo = connMgr.getNetworkInfo((ConnectivityManager.TYPE_WIFI));
-                if (networkInfo == null) {
-                    throw new NetworkErrorException("connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) is null");
-                }
-
-                isSyncPossible = !syncOnlyOnWifi || networkInfo.isConnected();
-
-                if (isSyncPossible) {
-                    Log.d(TAG, "Network connection established.");
-                } else {
-                    Log.d(TAG, "Network connected, but not used because only synced on wifi.");
-                }
-            } else {
-                networkConnected = false;
-                isSyncPossible = false;
-                Log.d(TAG, "No network connection.");
-            }
-        } catch (NetworkErrorException e) {
-            Log.i(TAG, e.getMessage());
-            networkConnected = false;
-            isSyncPossible = false;
         }
     }
 

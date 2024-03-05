@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Catatan</string>
+    <string name="app_name_long">Catatan Nextcloud</string>
+    <string name="label_all_notes">Semua catatan</string>
+    <string name="label_favorites">Disukai</string>
+    <string name="action_create">Catatan baru</string>
+    <string name="welcome_text">Selamat datang di %1$s</string>
+    <string name="action_settings">Pengaturan</string>
+    <string name="action_trashbin">Catatan terhapus</string>
+    <string name="action_search">Cari</string>
+    <string name="action_sorting_method">Metode penyortiran</string>
+    <string name="simple_cancel">Membatalkan</string>
+    <string name="simple_switch">Beralih</string>
+    <string name="simple_edit">Sunting</string>
+    <string name="simple_remove">Buang</string>
+    <string name="action_edit_save">Simpan</string>
+    <string name="simple_about">Tentang</string>
+    <string name="simple_link">Tautan</string>
+    <string name="action_note_deleted">Dihapus %1$s</string>
+    <string name="action_note_restored">Dipulihkan %1$s</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_uncategorized">Tidak terkategori</string>
+    <string name="menu_delete">Hapus</string>
+    <string name="menu_change_category">Kategori</string>
+    <string name="menu_favorite">Favorit</string>
+    <string name="menu_preview">Pratinjau</string>
+    <string name="menu_share">Bagikan</string>
+
+    <string name="search_in_category">Cari di %1$s</string>
+    <string name="search_in_all">Cari semua catatan</string>
+
+    <string name="change_category_title">Pilih kategori</string>
+
+    <string name="listview_updated_today">Hari ini</string>
+    <string name="listview_updated_yesterday">Kemarin</string>
+    <string name="listview_updated_this_week">Pekan ini</string>
+    <string name="listview_updated_last_week">Minggu lalu</string>
+    <string name="listview_updated_this_month">Bulan ini</string>
+    <string name="listview_updated_last_month">Bulan lalu</string>
+
+    <string name="settings_note_mode">Mode tampilan untuk catatan</string>
+    <string name="settings_note_mode_new">Catatan perilaku pembukaan</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_font_title">font monospace</string>
+    <string name="settings_font_size">Ukuran font</string>
+    <string name="settings_wifi_only">Sinkronkan saja pada Wi-Fi</string>
+    <string name="settings_lock">Kunci aplikasi (Beta)</string>
+    <string name="settings_lock_summary">Kredensial perangkat</string>
+    <string name="settings_background_sync">Sinkronisasi latar belakang</string>
+    <string name="settings_prevent_screen_capture">Cegah tangkapan layar</string>
+    <string name="settings_gridview">Tampilan kotak</string>
+    <string name="settings_keep_screen_on">Jaga tetap layar hidup</string>
+    <string name="settings_keep_screen_on_summary">Ketika melihat atau mengedit catatan</string>
+
+    <string name="error_sync">Sinkronisasi gagal: %1$s</string>
+    <string name="error_synchronization">Sinkronisasi gagal</string>
+    <string name="error_no_network">Tidak ada koneksi internet</string>
+    <string name="error_maintenance_mode">Server sedang dalam mode perawatan</string>
+    <string name="error_unknown">Terjadi kesalahan yang tidak diketahui.</string>
+
+    <string name="about_version_title">Versi</string>
+    <string name="about_version">Anda sedang menggunakan %1$s</string>
+    <string name="about_maintainer_title">Pengelola</string>
+    <string name="about_developers_title">Pengembang</string>
+    <string name="about_developers_original_author">penyusun asli</string>
+    <string name="about_translators_title">Penerjemah</string>
+    <string name="about_translators_transifex">Komunitas Nextcloud di %1$s</string>
+    <string name="about_testers_title">Penguji</string>
+    <string name="about_source_title">Kode sumber</string>
+    <string name="about_source">Proyek ini dihosting di GitHub: %1$s</string>
+    <string name="about_issues_title">Isu</string>
+    <string name="about_issues">Anda dapat melaporkan bug, proposal peningkatan, dan permintaan fitur di issue tracker GitHub: %1$s</string>
+    <string name="about_translate_title">Terjemahan</string>
+    <string name="about_translate">Bergabunglah dengan tim Nextcloud di Transifex dan bantu kami menerjemahkan aplikasi ini: %1$s</string>
+    <string name="about_app_license_title">Lisensi apl</string>
+    <string name="about_app_license">Aplikasi ini dilisensikan dibawah GNU GENERAL PUBLIC LICENSE v3+.</string>
+    <string name="about_app_license_button">Lihat lisensi</string>
+    <string name="about_icons_disclaimer_title">Ikon</string>
+    <string name="about_icons_disclaimer_app_icon">Untuk ikon asli, lihat %1$s.</string>
+    <string name="about_icons_disclaimer_mdi_icons">Semua ikon selanjutnya yang digunakan oleh aplikasi ini adalah %1$s yang dibuat oleh Google Inc. dan dilisensikan di bawah Lisensi Apache 2.0.</string>
+    <string name="about_icons_disclaimer_mdi">Ikon Desain Material</string>
+    <string name="about_credits_tab_title">Kredit</string>
+    <string name="about_contribution_tab_title">Kontribusi</string>
+    <string name="about_license_tab_title">Lisensi</string>
+
+    <string name="widget_note_list_title">Daftar catatan</string>
+    <string name="widget_note_list_placeholder">Tidak ada catatan</string>
+    <string name="widget_single_note_title">Satu catatan</string>
+    <string name="widget_single_note_placeholder_tv">Catatan tidak ditemukan</string>
+    <string name="widget_not_logged_in">Silakan masuk ke Catatan sebelum menggunakan widget ini</string>
+    <string name="widget_entry_fav_contentDescription">Ikon bintang digunakan untuk menandai sebuah item sebagai favorit</string>
+
+    <string name="activity_select_single_note">Pilih catatan</string>
+
+    <string name="shortcut_create_long">Buat catatan baru</string>
+
+    <string name="pref_value_font_normal">Normal</string>
+    <string name="pref_value_wifi_and_mobile">Sinkronkan pada Wi-Fi dan data seluler</string>
+    <string name="pref_value_lock">Password protection</string>
+
+    <string name="simple_error">Kesalahan</string>
+    <string name="simple_close">Tutup</string>
+    <string name="simple_copy">Salin</string>
+    <string name="simple_exception">Pengecualian</string>
+    <string name="pin_to_homescreen">Sematkan ke layar beranda</string>
+    <string name="note_has_been_deleted">Catatan ini telah dihapus</string>
+    <string name="add_account">Tambah akun</string>
+
+    <string name="category_music">Musik</string>
+    <string name="category_movies">Film</string>
+    <string name="category_movie">Film</string>
+    <string name="category_work">Kantor</string>
+    <string name="category_checklists">Daftar periksa</string>
+    <string name="category_tasks">Tugas</string>
+    <string name="category_recipe">Resep</string>
+    <string name="category_recipes">Resep</string>
+    <string name="category_restaurant">Restoran</string>
+    <string name="category_restaurants">Restoran</string>
+    <string name="category_food">Makanan</string>
+    <string name="category_bake">Panggang</string>
+    <!-- This represents a category where one can place passwords and credentials -->
+    <string name="category_key">Kunci</string>
+    <!-- This represents a category where one can place passwords and credentials -->
+    <string name="category_keys">Kunci</string>
+    <string name="category_password">Kata sandi</string>
+    <string name="category_passwords">Kata sandi</string>
+    <string name="category_credentials">Kredensial</string>
+    <string name="category_game">Permainan</string>
+    <string name="category_games">Permainan</string>
+    <!-- This is a noun, analogue to "game", like "theatre" or "drama" -->
+    <string name="category_play">Putar</string>
+    <string name="category_gift">Kado</string>
+    <string name="category_gifts">Kado</string>
+    <!-- Like a gift -->
+    <string name="category_present">Hadiah</string>
+    <!-- Like a gift -->
+    <string name="category_presents">Hadiah</string>
+
+    <string name="account_already_imported">Akun telah diimpor</string>
+    <string name="no_notes_yet">Belum ada catatan</string>
+    <string name="no_notes_yet_description">Tekan tombol + untuk membuat catatan baru</string>
+    <string name="simple_more">Lainnya</string>
+    <string name="simple_move">Pindah</string>
+    <string name="category_readonly">Hanya baca</string>
+    <string name="no_category">Tidak ada kategori</string>
+    <string name="add_category">Tambah %1$s</string>
+    <string name="simple_checkbox">Kotak check</string>
+    <string name="unlock_notes">Buka kunci catatan</string>
+    <string name="error_dialog_title">Aduh — apa sekarang? 🙁</string>
+    <string name="error_dialog_tip_token_mismatch_retry">Silakan mencoba untuk menutup aplikasi secara paksa dan mulai ulang. Mungkin ada koneksi yang tidak benar ke aplikasi Nextcloud.</string>
+    <string name="error_dialog_tip_token_mismatch_clear_storage">Jika masalah masih berlanjut, cobalah untuk membersihkan penyimpanan dari kedua aplikasi: Nextcloud dan Catatan Nextcloud untuk mengatasi masalah ini.</string>
+    <string name="error_dialog_tip_clear_storage">Anda dapat membersihkan penyimpanan dengan membuka info aplikasi dan memilih Penyimpanan → Bersihkan penyimpanan. ⚠️ Peringatan: Tindakan ini akan menghapus catatan yang belum disinkronkan!</string>
+    <string name="error_dialog_tip_files_outdated">Aplikasi Nextcloud Anda tampaknya sudah usang. Silakan kunjungi Play Store atau F-Droid untuk mendapatkan versi terbaru.</string>
+    <string name="error_dialog_tip_files_force_stop">Sepertinya ada yang salah dengan aplikasi Nextcloud Anda. Silakan coba hentikan paksa kedua aplikasi, aplikasi Nextcloud dan aplikasi Catatan Nextcloud.</string>
+    <string name="error_dialog_tip_files_delete_storage">Jika menghentikan paksa mereka tidak membantu, Anda dapat mencoba untuk membersihkan penyimpanan kedua aplikasi.</string>
+    <string name="error_dialog_timeout_instance">Tidak ada respons dari server Anda dalam waktu yang diberikan. Pastikan instansi Anda berjalan dengan baik.</string>
+    <string name="error_dialog_timeout_toggle">Periksa koneksi jaringan Anda. Kadang-kadang mematikan dan menghidupkan kembali data seluler atau Wi-Fi dapat membantu.</string>
+    <string name="error_dialog_check_server">Respons dari server Anda tidak benar. Silakan periksa apakah Anda dapat mengakses catatan Anda melalui antarmuka web.</string>
+    <string name="error_dialog_check_server_logs">Ada masalah dengan penyiapan Nextcloud Anda. Silakan lihat berkas log server.</string>
+    <string name="error_dialog_check_maintenance">Tolong periksa apakah instansi Nextcloud Anda saat ini tidak dalam mode pemeliharaan.</string>
+    <string name="error_dialog_insufficient_storage">Instansi Nextcloud Anda tidak memiliki penyimpanan gratis yang tersisa. Silakan hapus beberapa berkas untuk menyinkronkan perubahan lokal Anda ke cloud Anda.</string>
+    <string name="error_dialog_we_need_info">Kami membutuhkan informasi teknis berikut untuk membantu Anda.</string>
+    <string name="error_dialog_server_app_enabled">Pastikan Anda telah menginstal dan mengaktifkan aplikasi \"Catatan\" di server Anda.</string>
+    <string name="error_dialog_tip_disable_battery_optimizations">Mohon nonaktifkan semua optimisasi baterai untuk Nextcloud dan aplikasi Catatan.</string>
+    <string name="error_dialog_min_version">Aplikasi Android Catatan membutuhkan aplikasi Nextcloud Android setidaknya versi 3.18.</string>
+    <string name="added_content">Berhasil menambahkan \"%1$s\"</string>
+    <string name="shared_text_empty">Teks yang dibagikan kosong</string>
+    <string name="append_to_note">Tambahkan ke catatan</string>
+    <string name="change_note_title">Ubah judul catatan</string>
+    <string name="menu_edit_title">Edit judul</string>
+    <string name="simple_security">Keamanan</string>
+    <string name="appearance_and_behavior">Tampilan dan perilaku</string>
+    <string name="simple_synchronization">Sinkronisasi</string>
+    <string name="manage_accounts">Kelola akun</string>
+    <string name="action_formatting_help">Pemformatan</string>
+
+
+    <string name="noteMode_plain_edit">Mode edit biasa</string>
+    <string name="noteMode_plain_preview">Pratinjau biasa</string>
+    <string name="noteMode_rich_edit">Mode edit kaya</string>
+    <string name="noteMode_remember_last">Ingat pilihan terakhir saya</string>
+
+    <string-array name="fontSize_entries">
+        <item>Kecil</item>
+        <item>Sedang</item>
+        <item>Besar</item>
+    </string-array>
+
+    <string-array name="darkmode_entries">
+        <item>Terang</item>
+        <item>Gelap</item>
+        <item>Bawaan Sistem</item>
+    </string-array>
+
+    <plurals name="ab_selected">
+        <item quantity="other">%d terpilih</item>
+    </plurals>
+    <plurals name="bulk_notes_deleted">
+        <item quantity="other">Berhasil menghapus %1$d catatan</item>
+    </plurals>
+    <plurals name="bulk_notes_restored">
+        <item quantity="other">Berhasil memulihkan %1$d catatan</item>
+    </plurals>
+    <plurals name="share_multiple">
+        <item quantity="other">Bagikan konten dari %1$d catatan</item>
+    </plurals>
+
+    <string name="formatting_help_cbf_title">Pemformatan berdasarkan konteks</string>
+    <string name="formatting_help_cbf_body_1">Tujuan desain utama dari aplikasi Catatan adalah menyediakan alat tanpa gangguan. Meskipun Anda akan dapat memformat teks Anda dengan Markdown. Untuk berbagai contoh yang disebutkan di bawah ini, Anda dapat menggunakan pintasan sehingga Anda dapat memformat catatan Anda tanpa mengetik kode di bawah ini.</string>
+    <string name="formatting_help_cbf_body_2">Cukup pilih rentang teks atau ketuk kursor Anda di posisi mana pun dan Anda akan mendapatkan menu sembul yang berisi di samping entri bawaan %1$s, %2$s, %3$s entri-entri seperti %4$s atau %5$s.</string>
+
+    <string name="formatting_help_text_title">Teks</string>
+    <string name="formatting_help_text_body">Sangat mudah untuk membuat sebagian kata menjadi %1$stebal%1$s dan sebagian lainnya menjadi %2$smiring%2$s dengan Markdown. Anda dapat %3$smencoret%3$s beberapa kata dan bahkan [menautkan ke Nextcloud](https://nextcloud.com).</string>
+
+    <string name="formatting_help_lists_title">Daftar</string>
+    <string name="formatting_help_lists_body_1">Kadang-kadang Anda ingin daftar yang diberi nomor:</string>
+    <string name="formatting_help_lists_body_2">Satu</string>
+    <string name="formatting_help_lists_body_3">Dua</string>
+    <string name="formatting_help_lists_body_4">Tiga</string>
+    <string name="formatting_help_lists_body_5">Kadang-kadang Anda ingin menggunakan poin-poin:</string>
+    <string name="formatting_help_lists_body_6">Mulai sebuah baris dengan tanda hubung</string>
+    <string name="formatting_help_lists_body_7">Dan jika Anda memiliki subpoin, beri dua spasi sebelum tanda hubung atau bintang.</string>
+    <string name="formatting_help_lists_body_8">Seperti ini</string>
+    <string name="formatting_help_lists_body_9">Dan ini</string>
+
+    <string name="formatting_help_checkboxes_title">Kotak centang</string>
+    <string name="formatting_help_checkboxes_body_1">Untuk membuat kotak centang, gunakan daftar diikuti dengan tanda kurung</string>
+    <string name="formatting_help_structured_documents_title">Dokumen terstruktur</string>
+    <string name="formatting_help_structured_documents_body_1">Kadang-kadang, memiliki tingkat judul berbeda berguna untuk menyusun dokumen Anda. Mulai baris dengan %1$s untuk membuat judul. Beberapa %2$s berturut-turut menunjukkan ukuran judul yang lebih kecil.</string>
+    <string name="formatting_help_structured_documents_body_2">Ini adalah judul tingkat ketiga</string>
+    <string name="formatting_help_structured_documents_body_3">Anda dapat menggunakan satu %1$s hingga %2$s enam untuk berbagai ukuran judul.</string>
+    <string name="formatting_help_structured_documents_body_5">Imajinasi lebih penting daripada pengetahuan. Pengetahuan terbatas. Imajinasi melingkari dunia.</string>
+    <string name="formatting_help_structured_documents_body_6">- Albert Einstein</string>
+
+    <string name="formatting_help_code_title">Kode</string>
+    <string name="formatting_help_tables_title">Tabel</string>
+    <!-- Column header of a sample table -->
+    <string name="formatting_help_tables_column">Kolom %1d</string>
+    <!-- Table cell value of a sample table -->
+    <string name="formatting_help_tables_value">Nilai %1d</string>
+
+    <string name="formatting_help_images_body_1">Tautan harus berupa URL lengkap yang dimulai dengan protokol dan domain atau jalur mutlak yang dimulai dengan karakter %1$s.</string>
+    <string name="formatting_help_images_body_2">Agar sesuai dengan format Markdown, harap gunakan karakter escape dalam URL gambar. Ini berarti misalnya, ganti spasi dengan %1$s dalam URL.</string>
+    <string name="formatting_help_images_title">Gambar</string>
+    <string name="simple_other">Lainnya</string>
+    <string name="sort_last_modified">Urutkan berdasarkan tanggal diubah</string>
+    <string name="sort_alphabetically">Urutkan berdasarkan abjad</string>
+    <string name="error_action_open_battery_settings">Pengaturan baterai</string>
+    <string name="error_action_open_deck_info">Buka Info Aplikasi</string>
+    <string name="error_action_open_network">Pengaturan jaringan</string>
+    <string name="error_action_update_files_app">Perbarui</string>
+    <string name="no_account_configured_yet">Belum ada akun yang dikonfigurasi</string>
+    <string name="no_other_accounts">Anda belum mengonfigurasi akun lain.</string>
+    <string name="choose_account">Pilih akun</string>
+    <plurals name="remove_account_message">
+        <item quantity="other">Menghapus akun %1$s juga akan menghapus %2$d perubahan yang tidak tersinkronisasi yang tidak dapat dipulihkan.</item>
+    </plurals>
+    <string name="remove_account">Hapus %1$s</string>
+
+    <string name="you_have_to_be_connected_to_the_internet_in_order_to_add_an_account">Anda harus terhubung ke internet untuk menambahkan akun.</string>
+    <string name="settings_notes_path">Setel folder</string>
+
+    <string name="simple_next">Berikutnya</string>
+    <string name="simple_prev">Sebelumnya</string>
+    <string name="backup">Kami mendeteksi keadaan aplikasi yang tidak dapat dipulihkan. Harap cadangkan perubahan yang belum disinkronkan dan bersihkan penyimpanan aplikasi Catatan.</string>
+    <string name="settings_notes_path_description">Folder untuk menyimpan catatan Anda di Nextcloud Anda</string>
+    <string name="settings_notes_path_success">Folder catatan baru: %1$s</string>
+    <string name="settings_file_suffix">Ekstensi berkas</string>
+    <string name="settings_file_suffix_description">Ekstensi berkas untuk catatan baru di Nextcloud Anda</string>
+    <string name="settings_file_suffix_success">Akhiran berkas baru: %1$s</string>
+    <string name="http_status_code">Kode status HTTP: %1$d</string>
+    <string name="progress_import_indeterminate">Mengimpor catatan...</string>
+    <string name="progress_import">Impor catatan %1$d dari %2$d...</string>
+    <string name="account_imported">Akun diimpor.</string>
+    <string name="direct_editing_error">Kesalahan saat memuat pengeditan kaya</string>
+    <string name="switch_to_plain_editing">Beralih ke pengeditan biasa</string>
+    <string name="action_back">Kembali</string>
+    </resources>

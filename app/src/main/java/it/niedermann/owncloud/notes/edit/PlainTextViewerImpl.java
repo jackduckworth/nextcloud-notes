@@ -13,6 +13,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.nextcloud.android.sso.model.SingleSignOnAccount;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,6 +81,10 @@ public class PlainTextViewerImpl  extends AppCompatTextView implements MarkdownE
 
     @Override
     public void setSearchColor(@ColorInt int color) {
+    }
+
+    @Override
+    public void setCurrentSingleSignOnAccount(@Nullable SingleSignOnAccount account, @ColorInt int color) {
     }
 
     @Override
