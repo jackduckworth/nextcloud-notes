@@ -1,10 +1,19 @@
+/*
+ * Nextcloud Notes - Android Client
+ *
+ * SPDX-FileCopyrightText: 2015-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2015-2024 Stefan Niedermann <info@niedermann.it>
+ * SPDX-FileCopyrightText: 2023 Álvaro Brey <alvaro.brey@nextcloud.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
     ext {
-        kotlinVersion = '1.9.22'
+        kotlinVersion = '1.9.23'
         commonsVersion = '2.1.0'
     }
     repositories {
